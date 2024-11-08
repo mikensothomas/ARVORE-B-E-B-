@@ -110,27 +110,26 @@ Produto geraProdutoAleatorio() {
 }
 
 void imprimeArvore(No *no, int nivel) {
-    if (no != NULL) {
-        // Imprime indentação para mostrar o nível atual
-        for (int i = 0; i < nivel; i++) {
-            printf("    ");
-        }
-        
-        // Imprime as chaves do nó atual, ignorando valores inválidos (-1)
-        printf("|");
-        for (int i = 0; i < no->num_chaves; i++) {
-            if (no->chaves[i].codigo != -1) {  // Só imprime chaves válidas
-                printf(" %d ", no->chaves[i].codigo);
-            }
-        }
-        printf("\n");
+    if (no == NULL) return;
 
-        // Chamada recursiva para os nós filhos, ignorando filhos nulos
-        if (!no->folha) {
-            for (int i = 0; i <= no->num_chaves; i++) {
-                if (no->filhos[i] != NULL) {
-                    imprimeArvore(no->filhos[i], nivel + 1);
-                }
+    // Exibe as chaves do nó atual com um recuo proporcional ao nível
+    for (int i = 0; i < nivel; i++) printf("    ");
+    printf("|-- [");
+
+    // Imprime apenas as chaves válidas no nó atual
+    for (int i = 0; i < no->num_chaves; i++) {
+        if (no->chaves[i].codigo != -1) {  // Ignora chaves inválidas
+            printf(" %d ", no->chaves[i].codigo);
+            if (i < no->num_chaves - 1) printf("|");  // Divisor entre chaves
+        }
+    }
+    printf("]\n");
+
+    // Se não for folha, chama recursivamente para os filhos
+    if (!no->folha) {
+        for (int i = 0; i <= no->num_chaves; i++) {
+            if (no->filhos[i] != NULL) {
+                imprimeArvore(no->filhos[i], nivel + 1);
             }
         }
     }
