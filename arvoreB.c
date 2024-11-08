@@ -22,8 +22,12 @@ No *criaNo() {
     No *novo_no = (No *)malloc(sizeof(No));
     novo_no->num_chaves = 0;
     novo_no->folha = 1;
+    for (int i = 0; i < MAX; i++) {
+        novo_no->chaves[i].codigo = -1;  // Valor inválido para indicar chave não usada
+        strcpy(novo_no->chaves[i].nome, ""); // Nome vazio para chaves não usadas
+    }
     for (int i = 0; i < MAX + 1; i++) {
-        novo_no->filhos[i] = NULL;
+        novo_no->filhos[i] = NULL;  // Inicializa todos os filhos como NULL
     }
     return novo_no;
 }
@@ -41,13 +45,6 @@ void divideNo(No *pai, int indice, No *no) {
         for (int i = 0; i <= MIN; i++) {
             novo_no->filhos[i] = no->filhos[i + MIN + 1];
         }
-    }
-
-    for (int i = MIN + 1; i < MAX; i++) {
-        no->chaves[i].codigo = 0; // Reset valores não utilizados
-    }
-    for (int i = MIN + 1; i < MAX + 1; i++) {
-        no->filhos[i] = NULL; // Reset filhos não utilizados
     }
 
     no->num_chaves = MIN;
@@ -114,18 +111,26 @@ Produto geraProdutoAleatorio() {
 
 void imprimeArvore(No *no, int nivel) {
     if (no != NULL) {
+        // Imprime indentação para mostrar o nível atual
         for (int i = 0; i < nivel; i++) {
             printf("    ");
         }
+        
+        // Imprime as chaves do nó atual, ignorando valores inválidos (-1)
         printf("|");
         for (int i = 0; i < no->num_chaves; i++) {
-            printf(" %d ", no->chaves[i].codigo);
+            if (no->chaves[i].codigo != -1) {  // Só imprime chaves válidas
+                printf(" %d ", no->chaves[i].codigo);
+            }
         }
         printf("\n");
 
+        // Chamada recursiva para os nós filhos, ignorando filhos nulos
         if (!no->folha) {
             for (int i = 0; i <= no->num_chaves; i++) {
-                imprimeArvore(no->filhos[i], nivel + 1);
+                if (no->filhos[i] != NULL) {
+                    imprimeArvore(no->filhos[i], nivel + 1);
+                }
             }
         }
     }
@@ -172,7 +177,7 @@ No *removeProduto(No *raiz, int codigo) {
                 raiz->chaves[j] = raiz->chaves[j + 1];
             }
             raiz->num_chaves--;
-            printf("Produto removido: Codigo: %d", codigo);
+            printf("Produto removido: Codigo: %d\n", codigo);
         }
     } else if (!raiz->folha) {
         raiz->filhos[i] = removeProduto(raiz->filhos[i], codigo);
@@ -227,8 +232,7 @@ int main() {
                 printf("\nEstrutura da Arvore B:\n");
                 imprimeArvore(raiz, 0);
                 break;
-            case 5:
-                printf("Saindo...\n");
+            case 5:                printf("Saindo...\n");
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
