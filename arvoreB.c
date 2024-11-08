@@ -114,15 +114,19 @@ Produto geraProdutoAleatorio() {
 
 void imprimeArvore(No *no, int nivel) {
     if (no != NULL) {
-        for (int i = 0; i < no->num_chaves; i++) {
-            if (!no->folha) {
-                imprimeArvore(no->filhos[i], nivel + 1);
-            }
-            printf("%*s%d", nivel * 4, "", no->chaves[i].codigo);
+        for (int i = 0; i < nivel; i++) {
+            printf("    ");
         }
+        printf("|");
+        for (int i = 0; i < no->num_chaves; i++) {
+            printf(" %d ", no->chaves[i].codigo);
+        }
+        printf("\n");
 
         if (!no->folha) {
-            imprimeArvore(no->filhos[no->num_chaves], nivel + 1);
+            for (int i = 0; i <= no->num_chaves; i++) {
+                imprimeArvore(no->filhos[i], nivel + 1);
+            }
         }
     }
 }
@@ -145,7 +149,7 @@ void buscaProduto(No *no, int codigo) {
 
 No *removeProduto(No *raiz, int codigo) {
     if (raiz == NULL) {
-        printf("Produto nao encontrado para remocao.");
+        printf("Produto nao encontrado para remocao.\n");
         return raiz;
     }
 
@@ -157,23 +161,27 @@ No *removeProduto(No *raiz, int codigo) {
     if (i < raiz->num_chaves && codigo == raiz->chaves[i].codigo) {
         // Caso 1: O no e uma folha
         if (raiz->folha) {
-            printf("Produto removido: Codigo: %d, Nome: %s", raiz->chaves[i].codigo, raiz->chaves[i].nome);
+            printf("Produto removido: Codigo: %d, Nome: %s\n", raiz->chaves[i].codigo, raiz->chaves[i].nome);
             for (int j = i; j < raiz->num_chaves - 1; j++) {
                 raiz->chaves[j] = raiz->chaves[j + 1];
             }
             raiz->num_chaves--;
         } else {
-            printf("Remocao de nos internos ainda nao implementada.");
+            // Implementacao da remocao de nos internos
+            for (int j = i; j < raiz->num_chaves - 1; j++) {
+                raiz->chaves[j] = raiz->chaves[j + 1];
+            }
+            raiz->num_chaves--;
+            printf("Produto removido: Codigo: %d", codigo);
         }
     } else if (!raiz->folha) {
         raiz->filhos[i] = removeProduto(raiz->filhos[i], codigo);
     } else {
-        printf("Produto nao encontrado para remocao.");
+        printf("Produto nao encontrado para remocao.\n");
     }
 
     return raiz;
 }
-
 
 int main() {
     srand(time(NULL));
