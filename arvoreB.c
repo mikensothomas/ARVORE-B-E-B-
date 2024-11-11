@@ -104,7 +104,7 @@ No *insereProduto(No *raiz, Produto produto) {
 
 Produto geraProdutoAleatorio() {
     Produto p;
-    p.codigo = rand() % 1000;
+    p.codigo = rand() % 100;
     snprintf(p.nome, 50, "Produto_%d", p.codigo);
     return p;
 }
